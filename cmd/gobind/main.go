@@ -13,13 +13,14 @@ import (
 )
 
 var (
-	lang    = flag.String("lang", "java", "target language for bindings, either java, go, or objc (experimental).")
-	outdir  = flag.String("outdir", "", "result will be written to the directory instead of stdout.")
-	javaPkg = flag.String("javapkg", "", "custom Java package path used instead of the default 'go.<go package name>'. Valid only with -lang=java.")
-	prefix  = flag.String("prefix", "", "custom Objective-C name prefix used instead of the default 'Go'. Valid only with -lang=objc.")
+	lang      = flag.String("lang", "java", "target language for bindings, either java, go, cs (experimental), or objc (experimental).")
+	outdir    = flag.String("outdir", "", "result will be written to the directory instead of stdout.")
+	javaPkg   = flag.String("javapkg", "", "custom Java package path used instead of the default 'go.<go package name>'. Valid only with -lang=java.")
+	namespace = flag.String("namespace", "", "custom namespace used instead of the default 'go.<go package name>'. Valid only with -lang=cs.")
+	prefix    = flag.String("prefix", "", "custom Objective-C name prefix used instead of the default 'Go'. Valid only with -lang=objc.")
 )
 
-var usage = `The Gobind tool generates Java language bindings for Go.
+var usage = `The Gobind tool generates foreign language bindings for Go.
 
 For usage details, see doc.go.`
 
@@ -30,6 +31,8 @@ func main() {
 		log.Fatalf("Invalid option -javapkg for gobind -lang=%s", *lang)
 	} else if *lang != "objc" && *prefix != "" {
 		log.Fatalf("Invalid option -prefix for gobind -lang=%s", *lang)
+	} else if *lang != "cs" && *namespace != "" {
+		log.Fatalf("Invalid option -namespace for gobind -lang=%s", *lang)
 	}
 
 	cwd, err := os.Getwd()

@@ -6,8 +6,8 @@
 //
 // See the documentation on the gobind command for usage details
 // and the list of currently supported types.
-// (http://godoc.org/golang.org/x/mobile/cmd/gobind)
-package bind // import "golang.org/x/mobile/bind"
+// (http://github.com/nadiasvertex/mobile/cmd/gobind)
+package bind // import "github.com/nadiasvertex/mobile/bind"
 
 // TODO(crawshaw): slice support
 // TODO(crawshaw): channel support
@@ -31,6 +31,25 @@ func GenJava(w io.Writer, fset *token.FileSet, pkg *types.Package, javaPkg strin
 		fset:    fset,
 		pkg:     pkg,
 		javaPkg: javaPkg,
+	}
+	if err := g.gen(); err != nil {
+		return err
+	}
+	_, err := io.Copy(w, buf)
+	return err
+}
+
+// GenCs generates a C# API from a Go package.
+func GenCs(w io.Writer, fset *token.FileSet, pkg *types.Package, namespace string) error {
+	if namespace == "" {
+		namespace = namespaceName(pkg.Name())
+	}
+	buf := new(bytes.Buffer)
+	g := &csGen{
+		printer:   &printer{buf: buf, indentEach: []byte("    ")},
+		fset:      fset,
+		pkg:       pkg,
+		namespace: namespace,
 	}
 	if err := g.gen(); err != nil {
 		return err

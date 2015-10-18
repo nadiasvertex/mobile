@@ -17,8 +17,8 @@ import (
 	"unicode"
 	"unicode/utf8"
 
-	"golang.org/x/mobile/bind"
-	"golang.org/x/mobile/internal/loader"
+	"github.com/nadiasvertex/mobile/bind"
+	"github.com/nadiasvertex/mobile/internal/loader"
 )
 
 func genPkg(pkg *build.Package) {
@@ -54,6 +54,10 @@ func genPkg(pkg *build.Package) {
 	case "java":
 		w, closer := writer(fname, p)
 		processErr(bind.GenJava(w, fset, p, *javaPkg))
+		closer()
+	case "cs":
+		w, closer := writer(fname, p)
+		processErr(bind.GenCs(w, fset, p, *namespace))
 		closer()
 	case "go":
 		w, closer := writer(fname, p)
